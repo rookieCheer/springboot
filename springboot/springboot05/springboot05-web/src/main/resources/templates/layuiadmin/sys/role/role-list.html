@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<!--<html xmlns="http://www.w3.org/1999/xhtml"-->
+<!--xmlns:th="http://www.thymeleaf.org">-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+</head>
+<body>
+<!--查询条件-->
+<div class="role-list-table-query layui-form">
+    <div class="layui-row">
+        <div class="layui-col-xs3">
+            <span> 角色code：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="code" id="query-code" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-col-xs3">
+            <span> 角色标识：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="value" id="query-value" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-col-xs3">
+            <span> 角色name：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="name" id="query-name" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-col-xs3">
+            <span> 状态：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="status" id="query-status" autocomplete="off">
+            </div>
+        </div>
+    </div>
+    <button type="reset" class="layui-btn layui-btn-primary reset-btn">重置</button>
+    <button class="layui-btn" data-type="reload">查询</button>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-normal add-role-btn">新增角色</a>
+    </div>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-danger layui-btn-normal del-all-btn">批量删除</a>
+    </div>
+</div>
+<!--数据表格-->
+<table class="layui-hide" id="role-list-table-resetPage" lay-filter="role-list"></table>
+
+<script type="text/html" id="barRoleList">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="add">新增</a>-->
+    <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+</script>
+<script type="text/html" id="barRolePermission">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="permission-detail">查看</a>
+</script>
+<script type="text/html" id="switch-permission">
+    <!-- 这里的 checked 的状态只是演示 -->
+    <input type="checkbox" value="{{d.code}}" name="{{d.roleCode}}" lay-skin="switch" lay-text="开通|关闭"
+           lay-filter="grant-permission" {{ (d.checked==1)?'checked':'' }}>
+</script>
+
+<!--添加或编辑角色-->
+<div id="setRole" class="layer_self_wrap" style="width:500px;display:none;">
+    <form id="roleForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+        <input id="form-code" type="hidden" name="code"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-inline">
+                <input id="form-name" name="name" lay-verify="required" autocomplete="off" class="layui-input"
+                       type="text"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色标识</label>
+            <div class="layui-input-inline">
+                <input id="form-value" name="value" autocomplete="off" class="layui-input" type="text"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-text="可用|关闭" id="form-status" value=""
+                       lay-filter="switchStatus">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin-left: 10px;">
+                <button class="layui-btn" lay-submit="" lay-filter="submit">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--查看角色详细信息-->
+<div id="role-info-detail" class="layer_self_wrap" style="width:500px;display:none;">
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">角色名称:</label>
+        <label class="layui-form-label" id="name-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">角色标识:</label>
+        <label class="layui-form-label" id="code-detail"></label>
+    </div>
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">角色值:</label>
+        <label class="layui-form-label" id="value-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">
+            <span style="padding-right:25px;">状</span>
+            <span>态:</span>
+        </label>
+        <label class="layui-form-label" id="status-detail"></label>
+    </div>
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">创建时间:</label>
+        <label class="layui-form-label" id="create-time-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">
+            <span style="padding-right:1px;">创</span>
+            <span style="padding-right:1px;">建</span>
+            <span style="padding-right:1px;">人:</span>
+        </label>
+        <label class="layui-form-label" id="create-name-detail"></label>
+    </div>
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">修改时间:</label>
+        <label class="layui-form-label" id="update-time-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">
+            <span style="padding-right:1px;">修</span>
+            <span style="padding-right:1px;">改</span>
+            <span style="padding-right:1px;">人:</span>
+        </label>
+        <label class="layui-form-label" id="update-name-detail"></label>
+    </div>
+</div>
+<!--角色对应的权限查看-->
+<div id="role-permission-info-detail" class="layer_self_wrap" style="width:540px;margin-left:5px;display:none;">
+    <table class="layui-hide" id="permission-list-table" lay-filter="permission-list"></table>
+</div>
+
+<!--<div id="role-permission-info-detail" class="layer_self_wrap" style="width:500px;display:none;">-->
+<!--<div>-->
+<!--<label class="layui-form-label" style="font-weight:bold">权限名称:</label>-->
+<!--<label class="layui-form-label" id="permission-name-detail"></label>-->
+<!--<label class="layui-form-label" style="font-weight:bold">权限类型:</label>-->
+<!--<label class="layui-form-label" id="permission-type-detail"></label>-->
+<!--</div>-->
+<!--</div>-->
+
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['table', 'jquery'], function () {
+        var table = layui.table;
+        var $ = jQuery = layui.$;
+        //方法级渲染
+        tabless = table.render({
+            elem: '#role-list-table-resetPage',
+            url: '/000002/000002',
+            cellMinWidth: 80,//全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'limit' //每页数据量的参数名，默认：limit
+            }
+            , cols: [
+                [
+                    {checkbox: true, fixed: 'left'},
+                    {field: 'code', title: 'code'}
+                    , {field: 'name', title: '角色名称'}
+                    , {field: 'value', title: '角色值'}
+                    , {field: 'status', title: '状态'}
+                    // , {field: 'createCode', title: '创建人code'}
+                    // , {field: 'updateCode', title: '修改人code'}
+                    // , {field: 'createTime', title: '创建时间'}
+                    // , {field: 'updateTime', title: '修改时间'}
+                    , {fixed: 'right', title: '角色权限', align: 'center', toolbar: '#barRolePermission', width: 90}
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barRoleList', width: 120}
+                ]
+            ]
+            , id: 'roleListReload'
+            , page: {
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
+                , curr: 1  //初始在第几页  默认在第一页
+                , limit: 10  //一页显式多少
+                , groups: 3  //显式几个页码
+                , first: '首页'  //是否显示首页
+                , last: '末页'   //是否显示尾页
+            }
+            , height: 'full-135',
+            done: function (res, curr, count) {
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                //console.log(res);
+                //得到当前页码
+                //console.log(curr);
+                //得到数据总量
+                //console.log(count);
+                // pageCurr = curr;
+            }
+        });
+
+        //搜索框
+        var active = {
+            reload: function () {
+                var code = $('#query-code');
+                var value = $('#query-value');
+                var name = $('#query-name');
+                var status = $('#query-status');
+                //执行重载
+                table.reload('roleListReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    , where: { //重载条件查询，键值对形式   后台接受
+                        code: code.val(),
+                        value: value.val(),
+                        name: name.val(),
+                        status: status.val()
+                    }
+                });
+            }
+        };
+        //事件绑定
+        $('.role-list-table-query .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        layui.use(['form', 'laydate'], function () {
+            // var laydate = layui.laydate;
+            // //日期
+            // laydate.render({
+            //     elem: '#insertTimeStart'
+            // });
+            // laydate.render({
+            //     elem: '#insertTimeEnd'
+            // });
+        });
+    });
+
+    //查看修改  提交
+    layui.use('table', function () {
+        var table = layui.table,
+            $ = layui.$,
+            form = layui.form
+        ;
+        //监听工具条  使用lay-filter userList
+        table.on('tool(role-list)', function (obj) {
+            var data = obj.data;
+            /*表格操作    点击查看按钮 标签lay-event的值detail*/
+            if (obj.event === 'detail') {
+                seachDetailAjax(data.code);
+            } else if (obj.event === 'edit') {
+                seachAjax(data.code);
+                // } else if (obj.event === 'add') {
+                //     openRole("", "新增角色");
+                // } else if (obj.event === 'del') {
+                //     layer.confirm('真的删除行么', function (index) {
+                //         submitAjaxDel(data.code);
+                //         layer.close(index);
+                //     });
+            } else if (obj.event === 'permission-detail') {
+                seachDetailAjaxPermission(data.code);
+            }
+        });
+
+        //角色通过id查询 编辑
+        function seachAjax(code) {
+            //回显数据
+            $.get("/000002/000003", {"code": code}, function (data) {
+                //data.code =0 为成功
+                var roleVo = data.data;
+                if (data.code == 0 && roleVo != null) {
+                    $("#form-name").val(roleVo.name == null ? '' : roleVo.name);
+                    $("#form-value").val(roleVo.value == null ? '' : roleVo.value);
+                    $("#form-code").val(roleVo.code == null ? '' : roleVo.code);
+                    if (roleVo.status != null && roleVo.status === 0) {
+                        //对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
+                        //对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法。
+                        $("#form-status").prop("checked", false);
+                    } else {
+                        $("#form-status").prop("checked", true);
+                    }
+                    /*打开弹窗*/
+                    openRole(code, "设置角色", "#setRole");
+                    //重新渲染下form表单中的复选框 否则复选框选中效果无效
+                    layui.form.render();
+                } else {
+                    //弹出错误提示
+                    layer.alert(data.msg, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        }
+
+        //角色通过id查询  展示详情信息
+        function seachDetailAjax(code) {
+            //回显数据
+            $.get("/000002/000003", {"code": code}, function (data) {
+                //data.code =0 为成功
+                if (data.code == 0 && data.data != null) {
+                    var roleVo = data.data;
+                    $("#name-detail").text(roleVo.name == null ? '' : roleVo.name);
+                    $("#code-detail").text(roleVo.code == null ? '' : roleVo.code);
+                    $("#value-detail").text(roleVo.value == null ? '' : roleVo.value);
+                    $("#status-detail").text(roleVo.statusName == null ? '' : roleVo.statusName);
+
+                    $("#create-name-detail").text(roleVo.createName == null ? '' : roleVo.createName);
+                    $("#update-name-detail").text(roleVo.updateName == null ? '' : roleVo.updateName);
+                    $("#create-time-detail").text(roleVo.createTime == null ? '' : roleVo.createTime);
+                    $("#update-time-detail").text(roleVo.updateTime == null ? '' : roleVo.updateTime);
+                    /*打开弹窗*/
+                    openRole(code, "用户详情", "#role-info-detail");
+                    //重新渲染下form表单中的复选框 否则复选框选中效果无效
+                    layui.form.render('checkbox');
+                } else {
+                    //弹出错误提示
+                    layer.alert(data.msg, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        }
+
+
+        //角色通过id查询  展示详情信息
+        function seachDetailAjaxPermission(code) {
+
+            layui.use(['table', 'jquery'], function () {
+                var table = layui.table;
+                var $ = jQuery = layui.$;
+                //方法级渲染
+                tabless = table.render({
+                    elem: '#permission-list-table',
+                    url: '/000002/000006/' + code,
+                    cellMinWidth: 10
+                    , cols: [
+                        [
+                            {field: 'code', title: '权限标识', width: 120},
+                            {field: 'name', title: '权限名称', width: 120},
+                            {field: 'status', title: '权限状态', width: 120},
+                            {field: 'isChecked', title: '操作', templet: '#switch-permission'}
+                        ]
+                    ]
+                    , height: 'full-135'
+                });
+            });
+            openRole("", "角色权限", "#role-permission-info-detail");
+        }
+
+        //监听开通操作
+        form.on('switch(grant-permission)', function (obj) {
+            var code = this.value;
+            var roleCode = this.name;
+            var status = obj.elem.checked;
+            console.log(code + status);
+            $.get("/000002/000007", {"code": code, "status": status, "roleCode": roleCode}, function (data) {
+                if (data.code == 0 && data.data != null) {
+                    layer.alert("操作成功", function () {
+                        layer.close(layer.index);
+                    });
+                } else {
+                    //弹出错误提示
+                    layer.alert(data.msg, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+            // layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+        });
+
+
+        /*打开弹窗  详细介绍地址  http://www.layui.com/doc/modules/layer.html*/
+        function openRole(code, title, id) {
+            if (code == null || code == "") {
+                $("#code-form").val("");
+            }
+            layer.open({
+                type: 1,//类型：Number，默认：0  layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）。 若你采用layer.open({type: 1})方式调用，则type为必填项（信息框除外）
+                title: title,//类型：String/Array/Boolean，默认：'信息' title支持三种类型的值，若你传入的是普通的字符串，如title :'我是标题'，那么只会改变标题文本；若你还需要自定义标题区域样式，那么你可以title: ['文本', 'font-size:18px;']，数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+                content: $(id),//类型：String/DOM/Array，默认：'' content可传入的值是灵活多变的，不仅可以传入普通的html内容，还可以指定DOM，更可以随着type的不同而不同
+                skin: 'layui-layer-lan',//skin不仅允许你传入layer内置的样式class名，还可以传入您自定义的class名。这是一个很好的切入点，意味着你可以借助skin轻松完成不同的风格定制。目前layer内置的skin有：layui-layer-lanlayui-layer-molv
+                area: ['550px'],//类型：String/Array，默认：'auto' 在默认状态下，layer是宽高都自适应的，但当你只想定义宽度时，你可以area: '500px'，高度仍然是自适应的。当你宽高都要定义时，你可以area: ['500px', '300px']
+                fixed: false,//类型：Boolean，默认：true 即鼠标滚动时，层是否固定在可视区域。如果不想，设置fixed: false即可
+                resize: false,//类型：Boolean，默认：true  默认情况下，你可以在弹层右下角拖动来拉伸尺寸。如果对指定的弹层屏蔽该功能，设置 false即可。该参数对loading、tips层无效
+                shadeClose: true,//类型：Boolean，默认：false 如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                end: function () {//类型：Function，默认：null  无论是确认还是取消，只要层被销毁了，end都会执行，不携带任何参数。
+                    cleanRole();
+                }
+            });
+        }
+
+        /*清空弹出层数据*/
+        function cleanRole() {
+            $("#form-name").val("");
+            $("#form-value").val("");
+            $("#form-code").val("");
+            $("#form-status").prop("checked", false);
+            layui.form.render();
+        }
+
+        //修改form表单监听提交
+        form.on('submit(submit)', function (data) {
+            // 表单提交
+            submitAjax(data);
+            return false;//阻止表单跳转
+        });
+
+        //角色提交表单(修改或者添加 提交)
+        function submitAjax(obj) {
+            var status = $("#form-status").is(':checked');
+            if (status) {
+                $("#form-status").val("1");
+            } else {
+                $("#form-status").val("0");
+            }
+
+            obj.field.status = $("form-status").val();
+            //使用form表单序列化的时候  表单中 禁用的 和非选的 没有name属性的都不会传值到后台  需要自己拼接  如下
+            var data = $.param({"status": $("#form-status").val()}) + "&" + $("#roleForm").serialize() + "";
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                url: "/000002/000004",
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.alert("操作成功", function () {
+                            //清空弹出层数据
+                            cleanRole();
+                        });
+                    } else {
+                        layer.alert(data.msg, function () {
+                        });
+                    }
+                    window.setTimeout(function () {
+                        //关闭所有弹窗
+                        layer.closeAll();
+                        //加载页面
+                        load(obj);
+                    }, 1000)
+
+                },
+                error: function () {
+                    layer.alert("操作请求错误，请您稍后再试", function () {
+                        layer.closeAll();
+                        //加载load方法
+                        load(obj);//自定义
+                    });
+                }
+            });
+        }
+
+        //更新表格
+        function load(obj) {
+            //执行重载
+            table.reload('roleListReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: obj.field
+                // ,where: { //重载条件查询，键值对形式   后台接受
+                //     code: obj.field.code,
+                //     value: obj.field.value,
+                //     name: obj.field.name,
+                //     status: obj.field.status,
+                //     type: obj.field.type
+                // }
+            });
+        }
+
+        //添加用户信息  点击事件
+        $(".add-role-btn").click(function () {
+            // $("input[name='roleCode']").prop("checked", false);
+            // $("#status-form").prop("checked", false);
+            /*打开弹窗*/
+            openRole("", "新增角色信息", "#setRole");
+            //重新渲染下form表单中的复选框 否则复选框选中效果无效
+            layui.form.render('checkbox');
+        })
+        //批量删除用户信息 点击事件
+        $(".del-all-btn").click(function () {
+            var checkStatus = table.checkStatus('roleListReload'),
+                data = checkStatus.data,
+                roleCode = [];
+            if (data.length > 0) {
+                for (var i in data) {
+                    roleCode.push(data[i].code);
+                }
+                layer.confirm('确定删除选中的用户？', {icon: 3, title: '提示信息'}, function (index) {
+                    delAjax(roleCode);
+                })
+            } else {
+                layer.msg("请选择需要删除的用户");
+            }
+        })
+
+        //删除 用户信息 userCode  code数组
+        function delAjax(roleCode) {
+            $.ajax({
+                type: "POST",
+                data: {"ids": roleCode},
+                url: "/000002/000005",
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.alert("操作成功", function () {
+                            //清空弹出层数据
+                            cleanRole();
+                        });
+                    } else {
+                        layer.alert(data.msg, function () {
+                        });
+                    }
+                    window.setTimeout(function () {
+                        layer.closeAll();
+                        //加载页面
+                        table.reload('roleListReload', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                    }, 1000)
+
+                },
+                error: function () {
+                    layer.alert("操作请求错误，请您稍后再试", function () {
+                        layer.closeAll();
+                        //加载load方法
+                        table.reload('roleListReload', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+
+        //查询 重置
+        $(".reset-btn").click(function () {
+            $("#query-code").val("");
+            $("#query-value").val("");
+            $("#query-name").val("");
+            $("#query-status").val("");
+        })
+    });
+
+</script>
+
+</body>
+</html>

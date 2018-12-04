@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+
+
+<h3>欢迎[[${sysShiroUser.name}]]访问</h3>
+<h3 th:text="${#dates.format(sysShiroUser.lastLoginTime,'yyyy-MM-dd HH:mm:ss')}">登录时间[[${sysShiroUser.lastLoginTime}]]</h3>
+
+
+<a href="/000000/000000?pageNum=1">没有权限的页面</a>
+
+<a href="/logout">退出</a>
+
+</body>
+</html>

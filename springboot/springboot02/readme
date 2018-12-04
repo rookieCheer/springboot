@@ -1,0 +1,54 @@
+这个是使用   自定义注解和拦截器  实现登录和权限的拦截
+
+
+遇到问题
+
+        1 拦截器中不能自动注入service   原因    拦截器加载的时间在  spring上下文加载时间之前    所以获取不到service的bean
+
+        解决办法 在注册拦截器的时候 将拦截器当成一个bean注入
+
+        2 路径加 /和不加/的区别
+
+        加”/”代表 绝对路径,是从站点的根目录开始找  不加”/”代表 相对路径,是从当前路径开始找   比如"/000/000" 下一个访问的接口不加/
+        则访问 的是 /000/下一个接口名
+
+        3 重定向
+        getRequestDispatcher是服务器内部跳转，地址栏信息不变，只能跳转到web应用内的网页。
+        sendRedirect是页面重定向，地址栏信息改变，可以跳转到任意网页。
+        这两条网上都查得到，但看着比较乱，现提供我测试的结果（仅供参考）：
+        1.getRequestDispatcher分成两种，可以用request调用，也可以用getServletContext()调用
+           不同的是request.getRequestDispatcher(url)的url可以是相对路径也可以是绝对路径。
+           而this.getServletContext().getRequestDispatcher(url)的url只能是绝对路径。
+        注：request.getRequestDispatcher(url)之所以可以使用相对路劲，是因为在getRequestDispatcher(url)方法中封装了ServletContext.getRealPath()以获得相应的项目根路径，再通过字符串相加，从而可以获得一个完整的路径
+
+
+
+
+
+ 项目maven结构
+      web依赖 service                  父项目是springboot2
+      service                          父项目是springboot2
+      springboot2依赖 base             父项目是springboot3    有两个子项目: web service
+
+
+
+逻辑
+
+
+
+
+
+                          （用户信息为null）
+                            否              跳转到登录页面登录
+    访问接口--》判断是否登录
+   （从session中获取用户信息）
+
+                                                                            null      不用校验  直接放行
+                            是             已经登录 校验权限
+                                        （权限拦截器中 通过反射获取  注解对象）                                                没有   跳转到没有权限的页面
+                                                                            是       获取权限值和用户具有的权限对比（数据库查）
+                                                                                                                           有   正常访问
+
+
+  测试
+   访问http://127.0.0.1:11002跳转到登陆页面  admin 123456  登陆  成功跳转到登陆成功页面  点击没有权限的页面  需要role权限
