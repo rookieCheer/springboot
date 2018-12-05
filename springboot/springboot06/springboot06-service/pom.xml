@@ -4,22 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.lyf</groupId>
-    <artifactId>springboot06</artifactId>
+    <artifactId>springboot06-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <name>springboot06</name>
+    <name>springboot06-service</name>
     <description>Demo project for Spring Boot</description>
 
     <parent>
         <groupId>com.lyf</groupId>
-        <artifactId>springboot</artifactId>
+        <artifactId>springboot06</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <modules>
-        <module>springboot06-service</module>
-        <module>springboot06-web</module>
-    </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -27,11 +24,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.lyf</groupId>
-            <artifactId>base</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -43,6 +36,18 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                    </archive>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
             <plugin>
@@ -63,5 +68,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
