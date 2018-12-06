@@ -21,6 +21,7 @@
         <module>base</module>
         <module>springboot01</module>
         <module>springboot02</module>
+        <module>springboot03</module>
         <module>springboot04</module>
         <module>springboot05</module>
         <module>springboot06</module>
