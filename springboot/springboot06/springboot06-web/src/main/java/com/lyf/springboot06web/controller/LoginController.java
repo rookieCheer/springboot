@@ -38,7 +38,7 @@ public class LoginController {
 
 
     /**
-     * post登录
+     * post登陆
      * @param username
      * @param password
      * @param model
@@ -75,7 +75,7 @@ public class LoginController {
             // session 会销毁，在SessionListener监听session销毁，清理权限缓存
             subject.logout();
         }
-        return "loginForm";
+        return "/l/login";
     }
 
     /**

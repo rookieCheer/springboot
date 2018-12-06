@@ -1,27 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 	<meta charset="UTF-8">
-	<title>Title</title>
+	<title>后台管理-登陆</title>
+	<link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="/layuiadmin/admin.css" media="all">
 </head>
 <body>
-<h3>登录页面</h3>
-<form action="/login" method="post">
-	<!-- 提示信息 -->
-	<font color="red">[[${message}]]</font>
-	<table>
-		<tr>
-			<td><label>登录名1: </label></td>
-			<td><input type="text" id="username" name="username" ></td>
-		</tr>
-		<tr>
-			<td><label>密码: </label></td>
-			<td><input type="password" id="password" name="password" ></td>
-		</tr>
-		<tr>
-			<td><input type="submit" value="登录"></td>
-		</tr>
-	</table>
-</form>
+<div id="container">
+	<div></div>
+	<div class="admin-login-background">
+		<!--<div class="admin-header">-->
+		<!--<img src="image/ex_logo.png" class="admin-logo">-->
+		<!--</div>-->
+		<form class="layui-form" action="/login" method="post">
+			<div>
+				<i class="layui-icon layui-icon-username admin-icon admin-icon-username"></i>
+				<input type="text" name="username" placeholder="请输入用户名"
+					   autocomplete="off"
+					   class="layui-input admin-input admin-input-username">
+			</div>
+			<div>
+				<i class="layui-icon layui-icon-password admin-icon admin-icon-password"></i>
+				<input type="password" name="password"
+					   placeholder="请输入密码"
+					   autocomplete="off"
+					   class="layui-input admin-input">
+			</div>
+			<!--<div>-->
+				<!--<input type="text" name="verify"-->
+					   <!--placeholder="请输入验证码"-->
+					   <!--autocomplete="off"-->
+					   <!--class="layui-input admin-input admin-input-verify">-->
+				<!--<img class="admin-captcha" src=""-->
+					 <!--onclick="updateVerify()">-->
+			<!--</div>-->
+			<button class="layui-btn admin-button" lay-submit lay-filter="formDemo">登陆</button>
+		</form>
+	</div>
+</div>
+<script src="layuiadmin/layui/layui.js"></script>
+<script>
+    // window.onload=function (){
+    //     alert(m);
+    // }
+
+</script>
 </body>
 </html>
