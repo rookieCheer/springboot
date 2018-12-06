@@ -2,6 +2,7 @@ package com.lyf.springboot06service.biz;
 
 
 import com.lyf.base.entity.SysShiroRole;
+import com.lyf.springboot06service.entity.bo.UserBo;
 import com.lyf.springboot06service.entity.form.UserForm;
 import com.lyf.springboot06service.entity.query.UserQuery;
 import com.lyf.springboot06service.util.Result;
@@ -58,4 +59,12 @@ public interface IUserBizService {
      * @return
      */
     public List<SysShiroRole> getRoles();
+
+
+    /**
+     * 通过账号查用户信息
+     * @param account
+     * @return
+     */
+    UserBo loginUser(String account);
 }
