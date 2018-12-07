@@ -17,6 +17,7 @@ public class RolePermissionVo {
      * 状态     0 不可用    1 可用
      */
     private Integer status;
+    private String statusName;
     /**
      * 角色code
      */

@@ -188,6 +188,7 @@ public class RoleBizServiceImpl implements IRoleBizService {
             } else {
                 rolePermissionVo.setChecked("0");
             }
+            rolePermissionVo.setStatusName(MyEnumUtil.getPermissionStatusText(x.getStatus()));
             rolePermissionVo.setRoleCode(code);
             rolePermissionVo.setName(x.getName());
             rolePermissionVo.setStatus(x.getStatus());
