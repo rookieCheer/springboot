@@ -27,7 +27,7 @@ public class PermissionController {
      *
      * @return
      */
-   // @RequiresPermissions({"/000003/000001"})
+    @RequiresPermissions({"/000003/000001"})
     @RequestMapping("/000003/000001")
     public String searchSkip() {
         return "/layuiadmin/sys/permission/permission-list";
@@ -39,7 +39,7 @@ public class PermissionController {
      *
      * @return
      */
-   // @RequiresPermissions({"/000003/000002"})
+    @RequiresPermissions({"/000003/000002"})
     @RequestMapping("/000003/000002")
     @ResponseBody
     public Result search(PermissionQuery query) {
@@ -59,7 +59,7 @@ public class PermissionController {
      *
      * @return
      */
-  //  @RequiresPermissions({"/000003/000003"})
+    @RequiresPermissions({"/000003/000003"})
     @RequestMapping("/000003/000003")
     @ResponseBody
     public Result searchByCode(String code) {
@@ -79,7 +79,7 @@ public class PermissionController {
      *
      * @return
      */
-   // @RequiresPermissions({"/000003/000004"})
+    @RequiresPermissions({"/000003/000004"})
     @RequestMapping("/000003/000004")
     @ResponseBody
     public Result saveInfo(PermissionForm permissionForm) {

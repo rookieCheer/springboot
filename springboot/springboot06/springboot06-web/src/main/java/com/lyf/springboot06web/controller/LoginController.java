@@ -87,12 +87,12 @@ public class LoginController {
         return "/l/login";
     }
 
-    /**
-     * 没有权限页面跳转
-     * @return
-     */
-    @RequestMapping("/unauthorized")
-    public String unauthorized() {
-        return "/l/unauthorized";
-    }
+//    /**
+//     * 没有权限页面跳转
+//     * @return
+//     */
+//    @RequestMapping("/unauthorized")
+//    public String unauthorized() {
+//        return "/l/unauthorized";
+//    }
 }
