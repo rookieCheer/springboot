@@ -172,7 +172,7 @@
                     {field: 'code', title: 'code', align: 'center'}
                     , {field: 'name', title: '角色名称', align: 'center'}
                     , {field: 'value', title: '角色值', align: 'center'}
-                    , {field: 'status', title: '状态', align: 'center'}
+                    , {field: 'statusName', title: '状态', align: 'center'}
                     // , {field: 'createCode', title: '创建人code'}
                     // , {field: 'updateCode', title: '修改人code'}
                     // , {field: 'createTime', title: '创建时间'}
@@ -277,6 +277,7 @@
                     $("#form-name").val(roleVo.name == null ? '' : roleVo.name);
                     $("#form-value").val(roleVo.value == null ? '' : roleVo.value);
                     $("#form-code").val(roleVo.code == null ? '' : roleVo.code);
+                    console.log(typeof roleVo.status)
                     if (roleVo.status != null && roleVo.status === 0) {
                         //对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
                         //对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法。
@@ -327,7 +328,7 @@
         }
 
 
-        //角色通过id查询  展示详情信息
+        //角色通过id查询  展示角色权限详情信息
         function seachDetailAjaxPermission(code) {
 
             layui.use(['table', 'jquery'], function () {

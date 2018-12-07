@@ -6,6 +6,7 @@ import com.lyf.springboot06service.biz.IUserBizService;
 import com.lyf.springboot06service.entity.form.UserForm;
 import com.lyf.springboot06service.entity.query.UserQuery;
 import com.lyf.springboot06service.util.Result;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class UserController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000000/000001"})
     @RequestMapping("/000000/000001")
     public String searchSkip(Model model) {
         List<SysShiroRole> roles = userBizServiceImpl.getRoles();
@@ -53,6 +55,7 @@ public class UserController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000000/000002"})
     @ResponseBody
     @RequestMapping("/000000/000002")
     public Result search(UserQuery query) {
@@ -66,6 +69,7 @@ public class UserController {
      *
      * @return
      */
+  //  @RequiresPermissions({"/000000/000004"})
     @ResponseBody
     @RequestMapping("/000000/000004")
     public Result saveUserInfo(UserForm userForm) {
@@ -80,6 +84,7 @@ public class UserController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000000/000003"})
     @ResponseBody
     @RequestMapping("/000000/000003")
     public Result search(String code, Model model) {
@@ -96,6 +101,7 @@ public class UserController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000000/000005"})
     @ResponseBody
     @RequestMapping("/000000/000005")
     public Result delUsers(@RequestParam(value = "ids[]") String[] ids) {

@@ -12,6 +12,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
  * 这个类是参照JDBCRealm写的，主要是自定义了如何查询用户信息，如何查询用户的角色和权限，如何校验密码等逻辑
  */
@@ -31,13 +33,19 @@ public class MyRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("————权限认证————");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        UserBo userBo  = (UserBo)principalCollection.getPrimaryPrincipal();
-        for(SysShiroRole role:userBo.getSysShiroRoleList()){
-            authorizationInfo.addRole(role.getValue());
+        UserBo userBo = (UserBo) principalCollection.getPrimaryPrincipal();
+        List<SysShiroRole> sysShiroRoleList = userBo.getSysShiroRoleList();
+        List<SysShiroPermission> sysShiroPermissionList = userBo.getSysShiroPermissionList();
+        if (null != sysShiroRoleList) {
+            for (SysShiroRole role : sysShiroRoleList) {
+                authorizationInfo.addRole(role.getValue());
+            }
         }
-        //用户具有角色对应的权限值集合
-        for(SysShiroPermission permission:userBo.getSysShiroPermissionList()){
-            authorizationInfo.addStringPermission(permission.getValue());
+        if (null != sysShiroPermissionList) {
+            //用户具有角色对应的权限值集合
+            for (SysShiroPermission permission : sysShiroPermissionList) {
+                authorizationInfo.addStringPermission(permission.getValue());
+            }
         }
         return authorizationInfo;
     }
@@ -53,7 +61,7 @@ public class MyRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("————身份认证方法————");
         //获取用户的输入的账号.
-        String account = (String)authenticationToken.getPrincipal();
+        String account = (String) authenticationToken.getPrincipal();
         UserBo userBo = userBizServiceImpl.loginUser(account);
         if (null == userBo) {
             throw new UnknownAccountException("用户不存在!");

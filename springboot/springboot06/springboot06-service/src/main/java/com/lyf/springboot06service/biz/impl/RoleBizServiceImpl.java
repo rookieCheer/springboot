@@ -19,6 +19,7 @@ import com.lyf.springboot06service.entity.query.RoleQuery;
 import com.lyf.springboot06service.entity.query.SuperQuery;
 import com.lyf.springboot06service.entity.vo.RolePermissionVo;
 import com.lyf.springboot06service.entity.vo.RoleVo;
+import com.lyf.springboot06service.util.MyEnumUtil;
 import com.lyf.springboot06service.util.RelativeDateFormat;
 import com.lyf.springboot06service.util.Result;
 import org.apache.commons.lang3.StringUtils;
@@ -70,16 +71,7 @@ public class RoleBizServiceImpl implements IRoleBizService {
         page.getRecords().forEach(x -> {
             RoleVo roleVo = new RoleVo();
             BeanUtils.copyProperties(x, roleVo);
-//            List<RoleVo.Permission> permissionList = new ArrayList();
-
-//            roleMap.get(x.getCode()).forEach(y -> {
-//                RoleVo.Permission permission = new RoleVo().new Permission();
-//                String permissionCode = y.getPermissionCode();
-//                String permissionName = permissionMap.get(permissionCode);
-//                permission.setCode(permissionCode);
-//                permission.setName(permissionName);
-//                permissionList.add(permission);
-//            });
+            roleVo.setStatusName(MyEnumUtil.getRoleStatusText(x.getStatus()));
             roleVo.setUpdateTime(RelativeDateFormat.format(x.getUpdateTime()));
             resultList.add(roleVo);
         });

@@ -4,6 +4,7 @@ import com.lyf.springboot06service.biz.IRoleBizService;
 import com.lyf.springboot06service.entity.form.RoleForm;
 import com.lyf.springboot06service.entity.query.RoleQuery;
 import com.lyf.springboot06service.util.Result;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class RoleController {
      *
      * @return
      */
+   // @RequiresPermissions({"/000002/000001"})
     @RequestMapping("/000002/000001")
     public String searchSkip() {
         return "/layuiadmin/sys/role/role-list";
@@ -38,6 +40,7 @@ public class RoleController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000002/000002"})
     @RequestMapping("/000002/000002")
     @ResponseBody
     public Result search(RoleQuery query) {
@@ -57,6 +60,7 @@ public class RoleController {
      *
      * @return
      */
+   // @RequiresPermissions({"/000002/000003"})
     @RequestMapping("/000002/000003")
     @ResponseBody
     public Result searchByCode(String code) {
@@ -76,6 +80,7 @@ public class RoleController {
      *
      * @return
      */
+   // @RequiresPermissions({"/000002/000004"})
     @RequestMapping("/000002/000004")
     @ResponseBody
     public Result saveInfo(RoleForm roleForm) {
@@ -95,6 +100,7 @@ public class RoleController {
      *
      * @return
      */
+    @RequiresPermissions({"/000002/000005"})
     @ResponseBody
     @RequestMapping("/000002/000005")
     public Result delRoles(@RequestParam(value = "ids[]") String[] ids) {
@@ -115,6 +121,7 @@ public class RoleController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000002/000006/{code}"})
     @ResponseBody
     @RequestMapping("/000002/000006/{code}")
     public Result getPermission(@PathVariable(name = "code") String code) {
@@ -134,6 +141,7 @@ public class RoleController {
      *
      * @return
      */
+    //@RequiresPermissions({"/000002/000007"})
     @ResponseBody
     @RequestMapping("/000002/000007")
     public Result checked(String code, Boolean status, String roleCode) {

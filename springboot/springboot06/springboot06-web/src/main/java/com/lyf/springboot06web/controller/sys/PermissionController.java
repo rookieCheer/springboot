@@ -5,6 +5,7 @@ import com.lyf.springboot06service.biz.IPermissionBizService;
 import com.lyf.springboot06service.entity.form.PermissionForm;
 import com.lyf.springboot06service.entity.query.PermissionQuery;
 import com.lyf.springboot06service.util.Result;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class PermissionController {
      *
      * @return
      */
+   // @RequiresPermissions({"/000003/000001"})
     @RequestMapping("/000003/000001")
     public String searchSkip() {
         return "/layuiadmin/sys/permission/permission-list";
@@ -37,6 +39,7 @@ public class PermissionController {
      *
      * @return
      */
+   // @RequiresPermissions({"/000003/000002"})
     @RequestMapping("/000003/000002")
     @ResponseBody
     public Result search(PermissionQuery query) {
@@ -56,6 +59,7 @@ public class PermissionController {
      *
      * @return
      */
+  //  @RequiresPermissions({"/000003/000003"})
     @RequestMapping("/000003/000003")
     @ResponseBody
     public Result searchByCode(String code) {
@@ -75,6 +79,7 @@ public class PermissionController {
      *
      * @return
      */
+   // @RequiresPermissions({"/000003/000004"})
     @RequestMapping("/000003/000004")
     @ResponseBody
     public Result saveInfo(PermissionForm permissionForm) {

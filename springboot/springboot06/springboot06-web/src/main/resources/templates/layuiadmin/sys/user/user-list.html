@@ -327,7 +327,7 @@
                     $("#code-form").val(userVo.code == null ? '' : userVo.code);
                     $("#name-form").val(userVo.name == null ? '' : userVo.name);
                     $("#account-form").val(userVo.account == null ? '' : userVo.account);
-                    if (userVo.status != null && userVo.status === 0) {
+                    if (userVo.status != null && userVo.status === "0") {
                         //对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
                         //对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法。
                         $("#status-form").prop("checked", true);
