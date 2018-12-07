@@ -13,7 +13,8 @@
 <body>
 <!--查询条件-->
 <div class="user-list-table-query layui-form">
-    <div class="layui-row">
+    <!--class="layui-row"-->
+    <div style="margin-top:10px">
         <div class="layui-col-xs3">
             <span> 用户名：</span>
             <div class="layui-inline">
@@ -39,13 +40,15 @@
             </div>
         </div>
     </div>
-    <button type="reset" class="layui-btn layui-btn-primary reset-btn">重置</button>
-    <button class="layui-btn" data-type="reload">查询</button>
-    <div class="layui-inline">
-        <a class="layui-btn layui-btn-normal addUsers_btn">新增用户</a>
-    </div>
-    <div class="layui-inline">
-        <a class="layui-btn layui-btn-danger layui-btn-normal delAll_btn">批量删除</a>
+    <div>
+        <button type="reset" class="layui-btn layui-btn-primary reset-btn">重置</button>
+        <button class="layui-btn" data-type="reload">查询</button>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-normal addUsers_btn">新增用户</a>
+        </div>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-danger layui-btn-normal delAll_btn">批量删除</a>
+        </div>
     </div>
 </div>
 <!--数据表格-->
