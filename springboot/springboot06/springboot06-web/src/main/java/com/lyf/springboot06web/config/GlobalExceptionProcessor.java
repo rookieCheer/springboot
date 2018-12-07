@@ -38,6 +38,17 @@ public class GlobalExceptionProcessor {
         modelAndView.addObject("message", "没有权限");
         return modelAndView;
     }
+//    /**
+//     *
+//     */
+//    @ExceptionHandler(Exception.class)
+//    public ModelAndView handleExceptionException(Exception e) {
+//        logger.error("没有权限", e);
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("l/unauthorized");
+//        modelAndView.addObject("message", "所有的异常");
+//        return modelAndView;
+//    }
 
 
     @ExceptionHandler(RuntimeException.class)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="utf-8">
     <title>layuiAdmin std - 通用后台管理模板系统（iframe标准版）</title>
@@ -122,9 +122,15 @@
                             <dd>
                                 <a href="javascript:;">系统设置</a>
                                 <dl class="layui-nav-child">
-                                    <dd><a lay-href="/000000/000001">用户设置</a></dd>
-                                    <dd><a lay-href="/000002/000001">角色设置</a></dd>
+                                    <shiro:hasPermission name="/000000/000001">
+                                        <dd><a lay-href="/000000/000001">用户设置</a></dd>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="/000002/000001">
+                                        <dd><a lay-href="/000002/000001">角色设置</a></dd>
+                                    </shiro:hasPermission>
+                                    <shiro:hasPermission name="/000003/000001">
                                     <dd><a lay-href="/000003/000001">权限设置</a></dd>
+                                    </shiro:hasPermission>
                                 </dl>
                             </dd>
                             <dd>

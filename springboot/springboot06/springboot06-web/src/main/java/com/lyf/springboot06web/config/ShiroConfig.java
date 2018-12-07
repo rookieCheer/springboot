@@ -1,6 +1,7 @@
 package com.lyf.springboot06web.config;
 
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.lyf.springboot06web.shiro.MyRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -72,6 +73,7 @@ public class ShiroConfig {
     @Bean
     public MyRealm myRealm() {
         MyRealm myRealm = new MyRealm();
+        //设置密码比较规则
         myRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myRealm;
     }
@@ -89,6 +91,17 @@ public class ShiroConfig {
         //散列的次数，比如散列两次，相当于 md5( md5(""));
         hashedCredentialsMatcher.setHashIterations(2);
         return hashedCredentialsMatcher;
+    }
+
+    /**
+     * shiro官方只提供了jsp的标签，没有提供thymeleaf的，而thymeleaf在spring boot里应用已经很广泛了，这里依赖了一个第三方包。
+     * 然后就是shiro的配置文件，这里我们使用java－based 配置
+     * https://blog.csdn.net/u014695188/article/details/52356158
+     * @return
+     */
+    @Bean
+    public ShiroDialect shiroDialect(){
+        return new ShiroDialect();
     }
 
 //    public static void main(String[] args) {
