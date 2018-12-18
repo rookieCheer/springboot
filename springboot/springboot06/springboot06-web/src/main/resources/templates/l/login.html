@@ -27,23 +27,29 @@
 					   autocomplete="off"
 					   class="layui-input admin-input">
 			</div>
-			<!--<div>-->
-				<!--<input type="text" name="verify"-->
-					   <!--placeholder="请输入验证码"-->
-					   <!--autocomplete="off"-->
-					   <!--class="layui-input admin-input admin-input-verify">-->
-				<!--<img class="admin-captcha" src=""-->
-					 <!--onclick="updateVerify()">-->
-			<!--</div>-->
+			<div>
+				<input type="text" name="verify"
+					   placeholder="请输入验证码"
+					   autocomplete="off"
+					   class="layui-input admin-input admin-input-verify">
+				<img class="admin-captcha" src="/skip/getcode" id="validateCodeImg"
+					 onclick="updateVerify()">
+			</div>
 			<button class="layui-btn admin-button" lay-submit lay-filter="formDemo">登陆</button>
 		</form>
 	</div>
 </div>
 <script src="layuiadmin/layui/layui.js"></script>
 <script>
-    // window.onload=function (){
-    //     alert(m);
+    // updateVerify=function (){
+    //    // document.getElementById("validateCodeImg").src="loginCode?t="+Math.random();
+    //     document.getElementsByTagName("img")[0].src =
+    //         "/getcode";
     // }
+    function updateVerify(obj){
+        //document.getElementById("validateCodeImg").src="/getcode?date=" + new Date();
+        document.getElementById("validateCodeImg").src="/skip/getcode?date=" + new Date();
+    }
 
 </script>
 </body>

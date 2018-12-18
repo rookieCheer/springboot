@@ -5,3 +5,4 @@ springboot+layui+mybatis plus+thymeleaf+shiro
 
 
 002 修复样式  和部分bug
+加 验证码功能
