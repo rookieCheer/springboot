@@ -1,7 +1,7 @@
-package com.lyf.springboot06web.controller;
+package com.lyf.springboot07web.controller;
 
-import com.lyf.springboot06service.util.VerifyCode;
-import com.lyf.springboot06service.util.VerifyUtil;
+import com.lyf.springboot07service.util.VerifyCode;
+import com.lyf.springboot07service.util.VerifyUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

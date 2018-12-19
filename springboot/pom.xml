@@ -25,6 +25,7 @@
         <module>springboot04</module>
         <module>springboot05</module>
         <module>springboot06</module>
+        <module>springboot07</module>
     </modules>
 
     <properties>

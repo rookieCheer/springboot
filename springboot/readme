@@ -1,6 +1,7 @@
 base                基础dao层
-springboot1         基础项目                                    全局异常的简单处理
+springboot1         基础项目                                    全局异常的简单处理  获取客户端ip
 springboot2         拦截器实现                                  简单的登录 权限处理
 springboot4         使用 三大器是实现                           单独系统 单一登录  同一个浏览器 多用户登陆
 springboot5         springboot集成shiro                         基础实现
-springboot6         springboot集成shiro+thymeleaf+layui         权限管理
+springboot6         springboot集成shiro+thymeleaf+layui         权限管理+验证码
+springboot7         springboot集成shiro+thymeleaf+layui         读写分离            没做跟springboot6一样

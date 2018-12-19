@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+<!--查询条件-->
+<div class="user-list-table-query layui-form">
+    <!--class="layui-row"-->
+    <div style="margin-top:10px">
+        <div class="layui-col-xs3">
+            <span> 用户名：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="name" id="name" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-col-xs3">
+            <span> 用户账号：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="account" id="account" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-col-xs3">
+            <span> 状态：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="status" id="status" autocomplete="off">
+            </div>
+        </div>
+        <div class="layui-col-xs3">
+            <span> 角色：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="roleCode" id="roleCode" autocomplete="off">
+            </div>
+        </div>
+    </div>
+    <div>
+        <button type="reset" class="layui-btn layui-btn-primary reset-btn">重置</button>
+        <button class="layui-btn" data-type="reload">查询</button>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-normal addUsers_btn">新增用户</a>
+        </div>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-danger layui-btn-normal delAll_btn">批量删除</a>
+        </div>
+    </div>
+</div>
+<!--数据表格-->
+<table class="layui-hide" id="userList-table-resetPage" lay-filter="userList"></table>
+<!--操作-->
+<script type="text/html" id="barUserList">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+</script>
+
+<!--添加或编辑用户-->
+<div id="setUser" class="layer_self_wrap" style="width:350px;display:none;">
+    <form id="userForm" class="layui-form layui-form-pane" method="post" action="" style="margin-top: 20px;">
+        <input id="code-form" type="hidden" name="code"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户姓名</label>
+            <div class="layui-input-inline">
+                <input id="name-form" name="name" lay-verify="required" autocomplete="off" class="layui-input"
+                       type="text"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户账号</label>
+            <div class="layui-input-inline">
+                <input id="account-form" name="account" lay-verify="required" autocomplete="off" class="layui-input"
+                       type="text"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" lay-skin="switch" lay-text="可用|关闭" id="status-form" value=""
+                       lay-filter="switchStatus">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色列表：</label>
+            <div class="layui-input-block">
+                <i th:each="role:${roles}">
+                    <input type="checkbox" name="roleCode" th:value="${role.code}" th:title="${role.name}">
+                </i>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin-left: 10px;">
+                <button class="layui-btn" lay-submit="" lay-filter="submit">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--查看用户详细信息-->
+<div id="user-info-detail" class="layer_self_wrap" style="width:500px;display:none;">
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">用户姓名:</label>
+        <label class="layui-form-label" id="name-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">用户账号:</label>
+        <label class="layui-form-label" id="account-detail"></label>
+    </div>
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">最后登录:</label>
+        <label class="layui-form-label" id="lastLoginTime-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">
+            <span style="padding-right:25px;">状</span>
+            <span>态:</span>
+        </label>
+        <label class="layui-form-label" id="status-detail"></label>
+    </div>
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">创建时间:</label>
+        <label class="layui-form-label" id="create-time-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">
+            <span style="padding-right:1px;">创</span>
+            <span style="padding-right:1px;">建</span>
+            <span style="padding-right:1px;">人:</span>
+        </label>
+        <label class="layui-form-label" id="create-name-detail"></label>
+    </div>
+    <div>
+        <label class="layui-form-label" style="font-weight:bold">修改时间:</label>
+        <label class="layui-form-label" id="update-time-detail"></label>
+        <label class="layui-form-label" style="font-weight:bold">
+            <span style="padding-right:1px;">修</span>
+            <span style="padding-right:1px;">改</span>
+            <span style="padding-right:1px;">人:</span>
+        </label>
+        <label class="layui-form-label" id="update-name-detail"></label>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['table', 'jquery'], function () {
+        var table = layui.table;
+        var $ = jQuery = layui.$;
+        //方法级渲染
+        tabless = table.render({
+            elem: '#userList-table-resetPage',
+            url: '/000000/000002',
+            cellMinWidth: 80,//全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            request: {
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'limit' //每页数据量的参数名，默认：limit
+            }
+            , cols: [
+                [
+                    {checkbox: true, fixed: 'left'},
+                    // {type: 'numbers'},
+                    {field: 'code', title: 'code', align: 'center'}
+                    , {field: 'name', title: '用户名', align: 'center'}
+                    , {field: 'account', title: '用户账号', align: 'center'}
+                    , {field: 'statusName', title: '账户状态', align: 'center'}
+                    , {field: 'roleNames', title: '用户角色', align: 'center'}
+                    // , {field: 'createCode', title: '创建人ID'}
+                    //, {field: 'updateName', title: '修改人姓名'}
+                    // , {field: 'createTime', title: '创建时间'}
+                    //, {field: 'updateTime', title: '修改时间',width: 170}
+                    //, {field: 'lastLoginTime', title: '最后一次登录时间',width: 100}
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barUserList', width: 150}
+                ]
+            ]
+            , id: 'userListReload'
+            , page: {
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
+                // 限定条数   总数、计数  上一页     页     下一页    到第几页、跳
+                , curr: 1  //初始在第几页  默认在第一页
+                , limit: 10  //一页显式多少
+                , groups: 3  //显式几个页码
+                , first: '首页'  //是否显示首页
+                , last: '末页'   //是否显示尾页
+            }
+            //自适应高度
+            , height: 'full-135'
+            , done: function (res, curr, count) {
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                //console.log(res);
+                //得到当前页码
+                //console.log(curr);
+                //得到数据总量
+                //console.log(count);
+                //pageCurr = curr;
+            }
+        });
+
+        //搜索框
+        var active = {
+            reload: function () {
+                var name = $('#name');
+                var account = $('#account');
+                var status = $('#status');
+                var roleCode = $('#roleCode');
+                //执行重载
+                table.reload('userListReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    , where: { //重载条件查询，键值对形式   后台接受
+                        name: name.val(),
+                        account: account.val(),
+                        status: status.val(),
+                        roleCode: roleCode.val()
+                    }
+                });
+            }
+        };
+        //事件绑定
+        $('.user-list-table-query .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    //查看 修改  提交
+    layui.use('table', function () {
+        var table = layui.table,
+            $ = layui.$,
+            form = layui.form
+        ;
+        //监听工具条  使用lay-filter userList  详情 修改 删除
+        table.on('tool(userList)', function (obj) {
+            var data = obj.data;
+            /*表格操作    点击查看按钮 标签lay-event的值detail*/
+            if (obj.event === 'detail') {
+                seachDetailAjax(data.code);
+            } else if (obj.event === 'edit') {
+                seachAjax(data.code);
+                // } else if (obj.event === 'del') {
+                //     layer.confirm('真的删除行么', function (index) {
+                //         var userCode = [];
+                //         userCode.push(data.code)
+                //         delAjax(userCode);
+                //         layer.close(index);
+                //     });
+            }
+        });
+
+        //添加用户信息  点击事件
+        $(".addUsers_btn").click(function () {
+            //  $("input[name='roleCode']").prop("checked", false);
+            $("input[name='roleCode']").prop("checked", false);
+            $("#status-form").prop("checked", false);
+            /*打开弹窗*/
+            openUser("", "新增用户信息", "#setUser");
+            //重新渲染下form表单中的复选框 否则复选框选中效果无效
+            layui.form.render('checkbox');
+        })
+
+        //批量删除用户信息 点击事件
+        $(".delAll_btn").click(function () {
+            var checkStatus = table.checkStatus('userListReload'),
+                data = checkStatus.data,
+                userCode = [];
+            if (data.length > 0) {
+                for (var i in data) {
+                    userCode.push(data[i].code);
+                }
+                layer.confirm('确定删除选中的用户？', {icon: 3, title: '提示信息'}, function (index) {
+                    delAjax(userCode);
+                })
+            } else {
+                layer.msg("请选择需要删除的用户");
+            }
+        })
+
+        //修改form表单监听提交
+        form.on('submit(submit)', function (data) {
+            // 表单提交
+            submitAjax(data);
+            return false;//阻止表单跳转
+        });
+
+        //查询 重置
+        $(".reset-btn").click(function () {
+            $("#name").val("");
+            $("#account").val("");
+            $("#status").val("");
+            $("#roleCode").val("");
+        })
+
+
+        //通过id查询  展示详情信息
+        function seachDetailAjax(code) {
+            //回显数据
+            $.get("/000000/000003", {"code": code}, function (data) {
+                //data.code =0 为成功
+                if (data.code == 0 && data.data != null) {
+                    var userVo = data.data;
+                    $("#name-detail").text(userVo.name == null ? '' : userVo.name);
+                    $("#account-detail").text(userVo.account == null ? '' : userVo.account);
+                    $("#status-detail").text(userVo.statusName == null ? '' : userVo.statusName);
+                    $("#lastLoginTime-detail").text(userVo.lastLoginTime == null ? '' : userVo.lastLoginTime);
+                    $("#create-name-detail").text(userVo.createName == null ? '' : userVo.createName);
+                    $("#update-name-detail").text(userVo.updateName == null ? '' : userVo.updateName);
+                    $("#create-time-detail").text(userVo.createTime == null ? '' : userVo.createTime);
+                    $("#update-time-detail").text(userVo.updateTime == null ? '' : userVo.updateTime);
+                    /*打开弹窗*/
+                    openUser(code, "用户详情", "#user-info-detail");
+                    //重新渲染下form表单中的复选框 否则复选框选中效果无效
+                    layui.form.render('checkbox');
+                } else {
+                    //弹出错误提示
+                    layer.alert(data.msg, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        }
+
+        //通过id查询 编辑
+        function seachAjax(code) {
+            //回显数据
+            $.get("/000000/000003", {"code": code}, function (data) {
+                //data.code =0 为成功
+                if (data.code == 0 && data.data != null) {
+                    var userVo = data.data;
+                    $("#code-form").val(userVo.code == null ? '' : userVo.code);
+                    $("#name-form").val(userVo.name == null ? '' : userVo.name);
+                    $("#account-form").val(userVo.account == null ? '' : userVo.account);
+                    if (userVo.status != null && userVo.status === "0") {
+                        //对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
+                        //对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法。
+                        $("#status-form").prop("checked", true);
+                    } else {
+                        $("#status-form").prop("checked", false);
+                    }
+                    $("input[name='roleCode']").prop("checked", false);
+                    var s = userVo.roleNames;
+                    for (var i = 0; i < s.length; i++) {
+                        var f = "input[name='roleCode'][title=" + s[i] + "]";
+                        $(f).prop("checked", true)
+                    }
+                    /*打开弹窗*/
+                    openUser(code, "修改用户信息", "#setUser");
+                    //重新渲染下form表单中的复选框 否则复选框选中效果无效
+                    layui.form.render('checkbox');
+                } else {
+                    //弹出错误提示
+                    layer.alert(data.msg, function () {
+                        layer.closeAll();
+                    });
+                }
+            });
+        }
+
+        //删除 用户信息 userCode  code数组
+        function delAjax(userCode) {
+            $.ajax({
+                type: "POST",
+                data: {"ids": userCode},
+                url: "/000000/000005",
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.alert("操作成功", function () {
+                            //清空弹出层数据
+                            cleanUser();
+                        });
+                    } else {
+                        layer.alert(data.msg, function () {
+                        });
+                    }
+                    window.setTimeout(function () {
+                        layer.closeAll();
+                        //加载页面
+                        table.reload('userListReload', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                    }, 1000)
+
+                },
+                error: function () {
+                    layer.alert("操作请求错误，请您稍后再试", function () {
+                        layer.closeAll();
+                        //加载load方法
+                        table.reload('userListReload', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        //提交表单(修改或者添加 提交)
+        function submitAjax(obj) {
+            var status = $("#status-form").is(':checked');
+            if (status) {
+                $("#status-form").val("0");
+            } else {
+                $("#status-form").val("2");
+            }
+
+            obj.field.status = $("#status-form").val();
+            //使用form表单序列化的时候  表单中 禁用的 和非选的 没有name属性的都不会传值到后台  需要自己拼接  如下
+            var data = $.param({"status": $("#status-form").val()}) + "&" + $("#userForm").serialize() + "";
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                url: "/000000/000004",
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.msg('操作成功', {
+                            icon: 1,
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () { //关闭后执行
+                            //清空弹出层数据
+                            cleanUser();
+                            //关闭所有弹出层
+                            layer.closeAll();
+                            //加载页面
+                            load(obj);
+                        });
+                    } else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () { //关闭后执行
+                            //清空弹出层数据
+                            cleanUser();
+                            //关闭所有弹出层
+                            layer.closeAll();
+                            //加载页面
+                            load(obj);
+                        });
+                    }
+
+                },
+                error: function () {
+                    layer.alert("操作请求错误，请您稍后再试", function () {
+                        layer.closeAll();
+                        //加载load方法
+                        load(obj);//自定义
+                    });
+                }
+            });
+        }
+
+        /*打开弹窗  详细介绍地址  http://www.layui.com/doc/modules/layer.html*/
+        function openUser(code, title, id) {
+            if (code == null || code == "") {
+                $("#code-form").val("");
+            }
+            layer.open({
+                type: 1,//类型：Number，默认：0  layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）。 若你采用layer.open({type: 1})方式调用，则type为必填项（信息框除外）
+                title: title,//类型：String/Array/Boolean，默认：'信息' title支持三种类型的值，若你传入的是普通的字符串，如title :'我是标题'，那么只会改变标题文本；若你还需要自定义标题区域样式，那么你可以title: ['文本', 'font-size:18px;']，数组第二项可以写任意css样式；如果你不想显示标题栏，你可以title: false
+                content: $(id),//类型：String/DOM/Array，默认：'' content可传入的值是灵活多变的，不仅可以传入普通的html内容，还可以指定DOM，更可以随着type的不同而不同
+                skin: 'layui-layer-lan',//skin不仅允许你传入layer内置的样式class名，还可以传入您自定义的class名。这是一个很好的切入点，意味着你可以借助skin轻松完成不同的风格定制。目前layer内置的skin有：layui-layer-lanlayui-layer-molv
+                area: ['550px'],//类型：String/Array，默认：'auto' 在默认状态下，layer是宽高都自适应的，但当你只想定义宽度时，你可以area: '500px'，高度仍然是自适应的。当你宽高都要定义时，你可以area: ['500px', '300px']
+                fixed: false,//类型：Boolean，默认：true 即鼠标滚动时，层是否固定在可视区域。如果不想，设置fixed: false即可
+                resize: false,//类型：Boolean，默认：true  默认情况下，你可以在弹层右下角拖动来拉伸尺寸。如果对指定的弹层屏蔽该功能，设置 false即可。该参数对loading、tips层无效
+                shadeClose: true,//类型：Boolean，默认：false 如果你的shade是存在的，那么你可以设定shadeClose来控制点击弹层外区域关闭。
+                end: function () {//类型：Function，默认：null  无论是确认还是取消，只要层被销毁了，end都会执行，不携带任何参数。
+                    cleanUser();
+                }
+            });
+        }
+
+        /*清空编辑弹出层数据*/
+        function cleanUser() {
+            $("#code-form").val("");
+            $("#name-form").val("");
+            $("#account-form").val("");
+            $("#status-form").val("");
+        }
+
+        //更新表格
+        function load(obj) {
+            //执行重载
+            table.reload('userListReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: obj.field//重载条件查询，键值对形式   后台接受
+            });
+        }
+
+
+    });
+
+
+</script>
+
+</body>
+</html>
