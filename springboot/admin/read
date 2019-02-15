@@ -1,0 +1,3 @@
+构建项目的时候
+admin       是父项目 （依赖全部在这里面）       注意     pom文件中这个设置一定是pom   <packaging>pom</packaging>
+admin-dao   子项目                          注意        pom文件中这个设置一定是jar   <packaging>jar</packaging>
